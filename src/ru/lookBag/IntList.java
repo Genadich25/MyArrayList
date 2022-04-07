@@ -19,8 +19,17 @@ public class IntList implements IntListImpl {
         this.factSize = 100_000;
     }
 
+    public IntList(int size){
+        this.ints1 = new int[size];
+        this.sizeArray = ints1.length;
+        this.factSize = 0;
+    }
+
     @Override
     public int add(int item) {
+        if(factSize >= sizeArray){
+            grow();
+        }
         ints1[factSize] = item;
         factSize++;
         return item;
@@ -32,7 +41,7 @@ public class IntList implements IntListImpl {
             throw new NegativeIndexException();
         }
         if (index > sizeArray - 1 || index >= factSize) {
-            throw new IndexOutException();
+            grow();
         }
         for (int i = factSize; i >= index; i--) {
             ints1[i + 1] = ints1[i];
@@ -41,6 +50,18 @@ public class IntList implements IntListImpl {
         factSize++;
 
         return item;
+    }
+
+    private void grow(){
+        int newSize = sizeArray + sizeArray / 2 + 1;
+        int[] arrInt = new int[newSize];
+        for (int i = 0; i < arrInt.length; i++) {
+            if(i < sizeArray){
+                arrInt[i] = ints1[i];
+            }
+        }
+        sizeArray = newSize;
+        this.ints1 = arrInt;
     }
 
     @Override
@@ -87,7 +108,7 @@ public class IntList implements IntListImpl {
 
     @Override
     public boolean contains(int[] arr, int element) {
-        IntList.sortInsertion(arr);
+        IntList.quickSort(arr, 0, factSize - 1);
         int min = 0;
         int max = arr.length - 1;
 
@@ -198,21 +219,35 @@ public class IntList implements IntListImpl {
         return arr;
     }
 
-    private static void sortInsertion(int[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            int temp = arr[i];
-            int j = i;
-            while (j > 0 && arr[j - 1] >= temp) {
-                arr[j] = arr[j - 1];
-                j--;
-            }
-            arr[j] = temp;
+
+    public static void quickSort(int[] arr, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(arr, begin, end);
+
+            quickSort(arr, begin, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, end);
         }
     }
 
-    private static void swapElements(int[] arr, int indexA, int indexB) {
-        int tmp = arr[indexA];
-        arr[indexA] = arr[indexB];
-        arr[indexB] = tmp;
+    private static int partition(int[] arr, int begin, int end) {
+        int pivot = arr[end];
+        int i = (begin - 1);
+
+        for (int j = begin; j < end; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+
+                swapElements(arr, i, j);
+            }
+        }
+
+        swapElements(arr, i + 1, end);
+        return i + 1;
+    }
+
+    private static void swapElements(int[] arr, int left, int right) {
+        int temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
     }
 }
