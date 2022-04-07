@@ -189,7 +189,7 @@ public class IntList implements IntListImpl {
         return cloneArray;
     }
 
-    public static int[] generateRandomArray() {
+    private static int[] generateRandomArray() {
         Random random = new Random();
         int[] arr = new int[100_000];
         for (int i = 0; i < arr.length; i++) {
@@ -198,7 +198,7 @@ public class IntList implements IntListImpl {
         return arr;
     }
 
-    public static void sortInsertion(int[] arr) {
+    private static void sortInsertion(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
             int temp = arr[i];
             int j = i;
